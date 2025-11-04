@@ -27,6 +27,7 @@ dependencies {
     compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.androidx.room.gradle.plugin)
     compileOnly(libs.detekt.gradlePlugin)
+
     // Test dependencies
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.junit.jupiter.engine)
