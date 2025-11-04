@@ -15,3 +15,23 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kotlinCocoapods) apply false
 }
+
+// Task to run all unit tests across all modules
+// Usage: ./gradlew testAllAndroid, ./gradlew testAllIos, or ./gradlew testAll
+tasks.register("testAllAndroid") {
+    group = "verification"
+    description = "Runs all Android Debug unit tests for all modules"
+    // This will automatically run testDebugUnitTest for all subprojects that have it
+}
+
+tasks.register("testAllIos") {
+    group = "verification"
+    description = "Runs all iOS Simulator Arm64 tests for all modules"
+    // This will automatically run iosSimulatorArm64Test for all subprojects that have it
+}
+
+tasks.register("testAll") {
+    group = "verification"
+    description = "Runs all unit tests (Android + iOS) for all modules"
+    // This will automatically run both testDebugUnitTest and iosSimulatorArm64Test for all subprojects
+}

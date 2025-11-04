@@ -23,7 +23,7 @@ import kotlinx.serialization.json.Json
 
 fun provideHttpClient(
     json: Json,
-    tokenStorage: TokenStorage = DefaultTokenStorage(),
+//    tokenStorage: TokenStorage = DefaultTokenStorage(),
     enableLogging: Boolean = NetworkConfig.ENABLE_LOGGING
 ): HttpClient = HttpClient {
     install(ContentNegotiation) {
@@ -74,5 +74,5 @@ fun provideHttpClient(
 }
 
 //private suspend fun refreshAccessToken(tokenStorage: TokenStorage): String {
-//    return tokenStorage.getAccessToken() ?: "new_access_token"
+//    return tokenStorage.getAccessToken() ?: ""
 //}

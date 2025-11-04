@@ -7,13 +7,12 @@ import org.koin.dsl.module
 
 val networkModule = module {
     single { provideJson() }
-    singleOf(::DefaultTokenStorage) { bind<TokenStorage>() }
-    single { provideHttpClient(get(), get()) }
+//    singleOf(::DefaultTokenStorage) { bind<TokenStorage>() }
+    single { provideHttpClient(get()) }
     single {
         provideKtorfit(
             httpClient = get(),
             baseUrl = NetworkConfig.BASE_URL
         )
     }
-    single { get<Ktorfit>().createExampleApiService() }
 }
