@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kmp.library.convention)
     alias(libs.plugins.ktrofit)
+    alias(libs.plugins.kmp.koin.convention)
     id("kotlinx-serialization")
     id("com.google.devtools.ksp")
 }
@@ -44,6 +45,10 @@ kotlin {
 
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
+        }
+
+        commonTest.dependencies {
+
         }
     }
 }
