@@ -20,19 +20,19 @@ echo ""
 if [ -n "$MODULE" ]; then
     # Run tests for specific module
     echo "Running Android Debug Unit Tests for :$MODULE..."
-    ./gradlew :$MODULE:testDebugUnitTest --no-daemon || echo "⚠️  No Android tests found for :$MODULE"
+    ./gradlew :$MODULE:testDebugUnitTest --no-daemon || echo "No Android tests found for :$MODULE"
     
     echo ""
     echo "Running iOS Simulator Arm64 Tests for :$MODULE..."
-    ./gradlew :$MODULE:iosSimulatorArm64Test --no-daemon || echo "⚠️  No iOS tests found for :$MODULE"
+    ./gradlew :$MODULE:iosSimulatorArm64Test --no-daemon || echo "No iOS tests found for :$MODULE"
 else
     # Run tests for all modules
     echo "Running Android Debug Unit Tests for all modules..."
-    ./gradlew testDebugUnitTest --no-daemon --continue || echo "⚠️  Some Android tests may have failed"
+    ./gradlew testDebugUnitTest --no-daemon --continue || echo "Some Android tests may have failed"
     
     echo ""
     echo "Running iOS Simulator Arm64 Tests for all modules..."
-    ./gradlew iosSimulatorArm64Test --no-daemon --continue || echo "⚠️  Some iOS tests may have failed"
+    ./gradlew iosSimulatorArm64Test --no-daemon --continue || echo "Some iOS tests may have failed"
 fi
 
 echo ""

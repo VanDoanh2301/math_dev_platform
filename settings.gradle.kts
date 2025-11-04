@@ -36,3 +36,4 @@ plugins {
 include(":composeApp")
 include(":shared")
 include(":core:networking")
+include(":core:data")
