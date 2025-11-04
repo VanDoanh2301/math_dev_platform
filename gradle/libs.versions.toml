@@ -59,6 +59,11 @@ ksp = "2.1.20-2.0.1"
 ktlint = "12.1.1"
 detekt = "1.23.8"
 
+# AndroidX Dependencies
+androidxComposeBom = "2025.06.01"
+androidxWork = "2.10.2"
+androidxComposeCompiler = "1.5.15"
+androidxComposeRuntimeTracing = "1.8.3"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -126,6 +131,7 @@ androidx-room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", ver
 spotless-gradle = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotlessVersion" }
 detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+android-kotlin-multiplatform-library-plugin = { group = "com.android.kotlin.multiplatform.library", name = "com.android.kotlin.multiplatform.library.gradle.plugin", version.ref = "agp" }
 
 # Test
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junitJupiterApi" }
@@ -172,6 +178,29 @@ coil-kt-compose = { group = "io.coil-kt.coil3", name = "coil-compose-core", vers
 coil-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
 
+#Compose
+androidx-compose-animation = { group = "androidx.compose.animation", name = "animation" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
+androidx-compose-compiler = { group = "androidx.compose.compiler", name = "compiler", version.ref = "androidxComposeCompiler" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
+
+androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
+
+androidx-work-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "androidxWork" }
+androidx-work-testing = { group = "androidx.work", name = "work-testing", version.ref = "androidxWork" }
+
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+androidx-compose-runtime-tracing = { group = "androidx.compose.runtime", name = "runtime-tracing", version.ref = "androidxComposeRuntimeTracing" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -184,6 +213,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktrofit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 kotlinCocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 
 android-application-convention = { id = "org.convention.android.application", version = "unspecified" }
 android-application-compose-convention = { id = "org.convention.android.application.compose", version = "unspecified" }
@@ -191,6 +221,7 @@ android-application-flavors-convention = { id = "org.convention.android.applicat
 cmp-feature-convention = { id = "org.convention.cmp.feature", version = "unspecified" }
 kmp-koin-convention = { id = "org.convention.kmp.koin", version = "unspecified" }
 kmp-library-convention = { id = "org.convention.kmp.library", version = "unspecified" }
+cmp-application-convention = { id = "org.convention.cmp.application", version = "unspecified" }
 #Room Plugin
 room = { id = "androidx.room", version.ref = "room" }
 kmp-room-convention = { id = "org.convention.kmp.room", version = "unspecified" }

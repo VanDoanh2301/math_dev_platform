@@ -15,20 +15,18 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 @OptIn(ExperimentalWasmDsl::class, ExperimentalKotlinGradlePluginApi::class)
 internal fun Project.configureKotlinMultiplatform() {
     extensions.configure<KotlinMultiplatformExtension> {
+        listOf(
+            iosArm64(),
+            iosSimulatorArm64(),
+        ).forEach { iosTarget ->
+            iosTarget.binaries.framework {
+                baseName = "ComposeApp"
+                isStatic = true
+            }
+        }
 
-        jvm("desktop")
+        jvm()
         androidTarget()
-        iosSimulatorArm64()
-        iosX64()
-        iosArm64()
-        js(IR) {
-            this.nodejs()
-            binaries.executable()
-        }
-        wasmJs() {
-            browser()
-            nodejs()
-        }
 
         compilerOptions {
             freeCompilerArgs.add("-Xexpect-actual-classes")

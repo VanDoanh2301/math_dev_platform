@@ -102,5 +102,11 @@ gradlePlugin {
             implementationClass = "DetektConventionPlugin"
             description = "Configures detekt for the project"
         }
+        register("cmpApplication") {
+            id = "org.convention.cmp.application"
+            implementationClass = "CMPApplicationConventionPlugin"
+            description = "Configures Compose Multiplatform Application"
+        }
+
     }
 }
