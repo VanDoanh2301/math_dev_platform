@@ -34,15 +34,18 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.MaterialTheme
+import com.dev.devmath.core.designsystem.KptMaterialTheme
 import com.dev.devmath.core.designsystem.theme.KptTheme
 
 @Composable
 fun KptShimmerLoadingBox(
     modifier: Modifier = Modifier,
     shape: Shape = KptTheme.shapes.small,
-    shimmerColor: Color = KptTheme.colorScheme.surfaceVariant,
-    highlightColor: Color = KptTheme.colorScheme.surface,
+    shimmerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+    highlightColor: Color = MaterialTheme.colorScheme.surface,
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "shimmer")
     val shimmerTranslateAnim by infiniteTransition.animateFloat(
@@ -99,6 +102,54 @@ fun KptShimmerListItem(
                     .height(12.dp)
                     .fillMaxWidth(0.5f),
             )
+        }
+    }
+}
+
+@Preview(name = "KptShimmerLoadingBox - Light Theme")
+@Composable
+fun KptShimmerLoadingBoxLightPreview() {
+    KptMaterialTheme(darkTheme = false) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            KptShimmerLoadingBox(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            KptShimmerListItem()
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            KptShimmerListItem()
+        }
+    }
+}
+
+@Preview(name = "KptShimmerLoadingBox - Dark Theme")
+@Composable
+fun KptShimmerLoadingBoxDarkPreview() {
+    KptMaterialTheme(darkTheme = true) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            KptShimmerLoadingBox(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            KptShimmerListItem()
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            KptShimmerListItem()
         }
     }
 }

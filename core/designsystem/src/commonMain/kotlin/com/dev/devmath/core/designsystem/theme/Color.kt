@@ -2,7 +2,7 @@ package com.dev.devmath.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
-val primaryLight = Color(0xFF1800B1)
+val primaryLight = Color(0xFFBA1A1A)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFF403CD8)
 val onPrimaryContainerLight = Color(0xFFFDF9FF)

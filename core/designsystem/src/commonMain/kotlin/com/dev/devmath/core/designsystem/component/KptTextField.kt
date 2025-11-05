@@ -8,20 +8,31 @@
 package com.dev.devmath.core.designsystem.component
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.dev.devmath.core.designsystem.KptMaterialTheme
 import com.dev.devmath.core.designsystem.theme.KptTheme
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Variant for KptTextField
@@ -91,68 +102,68 @@ fun KptTextField(
 
     val defaultColors = colors ?: when (variant) {
         KptTextFieldVariant.Filled -> TextFieldDefaults.colors(
-            focusedContainerColor = KptTheme.colorScheme.surfaceContainerHighest,
-            unfocusedContainerColor = KptTheme.colorScheme.surfaceContainerHigh,
-            disabledContainerColor = KptTheme.colorScheme.surfaceContainerLow,
-            errorContainerColor = KptTheme.colorScheme.errorContainer,
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            errorContainerColor = MaterialTheme.colorScheme.errorContainer,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
             errorIndicatorColor = Color.Transparent,
-            focusedLabelColor = KptTheme.colorScheme.primary,
-            unfocusedLabelColor = KptTheme.colorScheme.onSurfaceVariant,
-            disabledLabelColor = KptTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
-            errorLabelColor = KptTheme.colorScheme.error,
-            focusedPlaceholderColor = KptTheme.colorScheme.onSurfaceVariant,
-            unfocusedPlaceholderColor = KptTheme.colorScheme.onSurfaceVariant,
-            disabledPlaceholderColor = KptTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
-            errorPlaceholderColor = KptTheme.colorScheme.onSurfaceVariant,
-            focusedTextColor = KptTheme.colorScheme.onSurface,
-            unfocusedTextColor = KptTheme.colorScheme.onSurface,
-            disabledTextColor = KptTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-            errorTextColor = KptTheme.colorScheme.onErrorContainer,
-            focusedLeadingIconColor = KptTheme.colorScheme.onSurfaceVariant,
-            unfocusedLeadingIconColor = KptTheme.colorScheme.onSurfaceVariant,
-            disabledLeadingIconColor = KptTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
-            errorLeadingIconColor = KptTheme.colorScheme.error,
-            focusedTrailingIconColor = KptTheme.colorScheme.onSurfaceVariant,
-            unfocusedTrailingIconColor = KptTheme.colorScheme.onSurfaceVariant,
-            disabledTrailingIconColor = KptTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
-            errorTrailingIconColor = KptTheme.colorScheme.error,
-            focusedSupportingTextColor = KptTheme.colorScheme.onSurfaceVariant,
-            unfocusedSupportingTextColor = KptTheme.colorScheme.onSurfaceVariant,
-            disabledSupportingTextColor = KptTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
-            errorSupportingTextColor = KptTheme.colorScheme.error
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+            errorLabelColor = MaterialTheme.colorScheme.error,
+            focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+            errorPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+            disabledTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+            errorTextColor = MaterialTheme.colorScheme.onErrorContainer,
+            focusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+            errorLeadingIconColor = MaterialTheme.colorScheme.error,
+            focusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+            errorTrailingIconColor = MaterialTheme.colorScheme.error,
+            focusedSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            unfocusedSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+            errorSupportingTextColor = MaterialTheme.colorScheme.error
         )
         KptTextFieldVariant.Outlined -> OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = KptTheme.colorScheme.primary,
-            unfocusedBorderColor = KptTheme.colorScheme.outline,
-            disabledBorderColor = KptTheme.colorScheme.outlineVariant.copy(alpha = 0.38f),
-            errorBorderColor = KptTheme.colorScheme.error,
-            focusedLabelColor = KptTheme.colorScheme.primary,
-            unfocusedLabelColor = KptTheme.colorScheme.onSurfaceVariant,
-            disabledLabelColor = KptTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
-            errorLabelColor = KptTheme.colorScheme.error,
-            focusedPlaceholderColor = KptTheme.colorScheme.onSurfaceVariant,
-            unfocusedPlaceholderColor = KptTheme.colorScheme.onSurfaceVariant,
-            disabledPlaceholderColor = KptTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
-            errorPlaceholderColor = KptTheme.colorScheme.onSurfaceVariant,
-            focusedTextColor = KptTheme.colorScheme.onSurface,
-            unfocusedTextColor = KptTheme.colorScheme.onSurface,
-            disabledTextColor = KptTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-            errorTextColor = KptTheme.colorScheme.onErrorContainer,
-            focusedLeadingIconColor = KptTheme.colorScheme.onSurfaceVariant,
-            unfocusedLeadingIconColor = KptTheme.colorScheme.onSurfaceVariant,
-            disabledLeadingIconColor = KptTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
-            errorLeadingIconColor = KptTheme.colorScheme.error,
-            focusedTrailingIconColor = KptTheme.colorScheme.onSurfaceVariant,
-            unfocusedTrailingIconColor = KptTheme.colorScheme.onSurfaceVariant,
-            disabledTrailingIconColor = KptTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
-            errorTrailingIconColor = KptTheme.colorScheme.error,
-            focusedSupportingTextColor = KptTheme.colorScheme.onSurfaceVariant,
-            unfocusedSupportingTextColor = KptTheme.colorScheme.onSurfaceVariant,
-            disabledSupportingTextColor = KptTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
-            errorSupportingTextColor = KptTheme.colorScheme.error
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+            disabledBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.38f),
+            errorBorderColor = MaterialTheme.colorScheme.error,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+            errorLabelColor = MaterialTheme.colorScheme.error,
+            focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+            errorPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+            disabledTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+            errorTextColor = MaterialTheme.colorScheme.onErrorContainer,
+            focusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+            errorLeadingIconColor = MaterialTheme.colorScheme.error,
+            focusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+            errorTrailingIconColor = MaterialTheme.colorScheme.error,
+            focusedSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            unfocusedSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+            errorSupportingTextColor = MaterialTheme.colorScheme.error
         )
     }
 
@@ -220,6 +231,7 @@ fun KptFilledTextField(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    shape: Shape? = null,
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -240,6 +252,7 @@ fun KptFilledTextField(
         variant = KptTextFieldVariant.Filled,
         enabled = enabled,
         readOnly = readOnly,
+        shape = shape,
         label = label,
         placeholder = placeholder,
         leadingIcon = leadingIcon,
@@ -265,6 +278,7 @@ fun KptOutlinedTextField(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    shape: Shape? = null,
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -285,6 +299,7 @@ fun KptOutlinedTextField(
         variant = KptTextFieldVariant.Outlined,
         enabled = enabled,
         readOnly = readOnly,
+        shape = shape,
         label = label,
         placeholder = placeholder,
         leadingIcon = leadingIcon,
@@ -300,3 +315,88 @@ fun KptOutlinedTextField(
     )
 }
 
+@Preview(name = "KptTextField - Light Theme")
+@Composable
+fun KptTextFieldLightPreview() {
+    KptMaterialTheme(darkTheme = false) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            var text by remember { mutableStateOf("") }
+            
+            KptOutlinedTextField(
+                value = text,
+                onValueChange = { text = it },
+                label = { Text("Outlined TextField") },
+                placeholder = { Text("Enter text") }
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            KptFilledTextField(
+                value = text,
+                onValueChange = { text = it },
+                label = { Text("Filled TextField") },
+                placeholder = { Text("Enter text") }
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            var errorText by remember { mutableStateOf("invalid") }
+            KptOutlinedTextField(
+                value = errorText,
+                onValueChange = { errorText = it },
+                label = { Text("Email") },
+                isError = !errorText.contains("@"),
+                supportingText = {
+                    if (!errorText.contains("@")) {
+                        Text("Invalid email format")
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Preview(name = "KptTextField - Dark Theme")
+@Composable
+fun KptTextFieldDarkPreview() {
+    KptMaterialTheme(darkTheme = true) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            var text by remember { mutableStateOf("") }
+            
+            KptOutlinedTextField(
+                value = text,
+                onValueChange = { text = it },
+                label = { Text("Outlined TextField") },
+                placeholder = { Text("Enter text") }
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            KptFilledTextField(
+                value = text,
+                onValueChange = { text = it },
+                label = { Text("Filled TextField") },
+                placeholder = { Text("Enter text") }
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            var errorText by remember { mutableStateOf("invalid") }
+            KptOutlinedTextField(
+                value = errorText,
+                onValueChange = { errorText = it },
+                label = { Text("Email") },
+                isError = !errorText.contains("@"),
+                supportingText = {
+                    if (!errorText.contains("@")) {
+                        Text("Invalid email format")
+                    }
+                }
+            )
+        }
+    }
+}

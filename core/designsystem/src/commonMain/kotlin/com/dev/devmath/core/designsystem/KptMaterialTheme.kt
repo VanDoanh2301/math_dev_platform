@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dev.devmath.core.designsystem.core.KptThemeProvider
 import com.dev.devmath.core.designsystem.theme.KptTheme
-import com.dev.devmath.core.designsystem.theme.KptThemeProviderImpl
 import com.dev.devmath.core.designsystem.theme.LocalKptColors
 import com.dev.devmath.core.designsystem.theme.LocalKptElevation
 import com.dev.devmath.core.designsystem.theme.LocalKptShapes
@@ -121,14 +120,16 @@ fun KptMaterialTheme(
 @Composable
 private fun KptMaterialThemeUsageExample() {
     KptMaterialTheme {
-        // All Material3 components will use KptTheme values
-        MaterialTheme.colorScheme.primary // = KptTheme.colorScheme.primary
-        MaterialTheme.typography.titleLarge // = KptTheme.typography.titleLarge
-        MaterialTheme.shapes.medium // = KptTheme.shapes.medium
+        // All Material3 components will use theme values
+        MaterialTheme.colorScheme.primary // Primary color from theme
+        MaterialTheme.typography.titleLarge // Typography from theme
+        MaterialTheme.shapes.medium // Shapes from theme
 
-        // KptTheme values are also available directly
-        KptTheme.spacing.md
-        KptTheme.elevation.level2
+        // KPT design tokens are also available directly
+        KptTheme.spacing.md // Spacing tokens
+        KptTheme.elevation.level2 // Elevation tokens
+        KptTheme.shapes.small // Shape tokens
+        KptTheme.typography.bodyLarge // Typography tokens
     }
 }
 
