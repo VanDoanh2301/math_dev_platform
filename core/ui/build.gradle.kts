@@ -18,10 +18,12 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(compose.components.uiToolingPreview)
 
-            implementation(libs.kotlinx.datetime)
-            implementation(libs.kotlinx.serialization.json)
 
-            implementation(libs.calf.permissions)
+            implementation(libs.jb.composeViewmodel)
+            implementation(libs.jb.lifecycle.compose)
+            implementation(libs.jb.lifecycleViewmodel)
+            implementation(libs.jb.composeNavigation)
+            implementation(libs.jb.lifecycleViewmodelSavedState)
         }
     }
 }

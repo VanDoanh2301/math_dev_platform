@@ -24,14 +24,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.unit.dp
 import com.dev.devmath.core.designsystem.KptMaterialTheme
 import com.dev.devmath.core.designsystem.layout.KptSmoothLinearProgressIndicator
 import com.dev.devmath.core.designsystem.theme.KptTheme
-import com.dev.devmath.core.designsystem.theme.fontFamily
 import com.dev.devmath.core.ui.resources.Res
 import com.dev.devmath.core.ui.resources.*
 import kotlinx.coroutines.delay
@@ -91,9 +87,8 @@ fun SplashScreen() {
                 )
             }
 
-
             KptSmoothLinearProgressIndicator(
-                progress = 0.5f,
+                progress = progress,
                 modifier = Modifier
                     .padding(horizontal = KptTheme.spacing.lg, vertical = KptTheme.spacing.md)
                     .fillMaxWidth()
