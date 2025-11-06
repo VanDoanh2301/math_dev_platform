@@ -20,6 +20,13 @@ kotlin {
         androidUnitTest.dependencies {
 
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(compose.ui)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.runtime)
+        }
         commonMain.dependencies {
             implementation(compose.ui)
             implementation(compose.uiUtil)
@@ -51,5 +58,5 @@ dependencies {
 compose.resources {
     publicResClass = true
     generateResClass = always
-    packageOfResClass = "com.dev.devmath.core.designsystem.generated.resources"
+    packageOfResClass = "com.dev.devmath.core.designsystem.resources"
 }

@@ -12,14 +12,14 @@ package com.dev.devmath.core.designsystem.theme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import com.dev.devmath.core.designsystem.generated.resources.Res
-import com.dev.devmath.core.designsystem.generated.resources.inter_bold
-import com.dev.devmath.core.designsystem.generated.resources.inter_extra_bold
-import com.dev.devmath.core.designsystem.generated.resources.inter_light
-import com.dev.devmath.core.designsystem.generated.resources.inter_medium
-import com.dev.devmath.core.designsystem.generated.resources.inter_regular
-import com.dev.devmath.core.designsystem.generated.resources.inter_semi_bold
-import com.dev.devmath.core.designsystem.generated.resources.inter_thin
+import com.dev.devmath.core.designsystem.resources.Res
+import com.dev.devmath.core.designsystem.resources.inter_bold
+import com.dev.devmath.core.designsystem.resources.inter_extra_bold
+import com.dev.devmath.core.designsystem.resources.inter_light
+import com.dev.devmath.core.designsystem.resources.inter_medium
+import com.dev.devmath.core.designsystem.resources.inter_regular
+import com.dev.devmath.core.designsystem.resources.inter_semi_bold
+import com.dev.devmath.core.designsystem.resources.inter_thin
 import org.jetbrains.compose.resources.Font
 
 

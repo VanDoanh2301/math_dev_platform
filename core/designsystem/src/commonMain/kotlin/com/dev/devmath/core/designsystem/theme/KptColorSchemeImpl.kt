@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dev.devmath.core.designsystem.core.ComponentDsl
 import com.dev.devmath.core.designsystem.core.KptColorScheme
+import com.dev.devmath.core.designsystem.core.KptCornerRadius
 import com.dev.devmath.core.designsystem.core.KptElevation
 import com.dev.devmath.core.designsystem.core.KptShapes
 import com.dev.devmath.core.designsystem.core.KptSpacing
@@ -205,13 +206,13 @@ data class KptTypographyImpl(
         letterSpacing = 0.sp,
     ),
     override val headlineLarge: TextStyle = TextStyle(
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
         lineHeight = 40.sp,
         letterSpacing = 0.sp,
     ),
     override val headlineMedium: TextStyle = TextStyle(
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontSize = 28.sp,
         lineHeight = 36.sp,
         letterSpacing = 0.sp,
@@ -223,7 +224,7 @@ data class KptTypographyImpl(
         letterSpacing = 0.sp,
     ),
     override val titleLarge: TextStyle = TextStyle(
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp,
@@ -308,6 +309,16 @@ data class KptElevationImpl(
 ) : KptElevation
 
 @Immutable
+data class KptCornerRadiusImpl(
+    override val extraSmall: Dp = 4.dp,
+    override val small: Dp = 8.dp,
+    override val medium: Dp = 12.dp,
+    override val large: Dp = 16.dp,
+    override val extraLarge: Dp = 28.dp
+) : KptCornerRadius
+
+
+@Immutable
 data class KptThemeProviderImpl(
     override val colors: KptColorScheme = KptColorSchemeImpl(),
     override val typography: KptTypography = KptTypographyImpl(),
@@ -353,6 +364,9 @@ val LocalKptTypography = staticCompositionLocalOf<KptTypography> { KptTypography
 val LocalKptShapes = staticCompositionLocalOf<KptShapes> { KptShapesImpl() }
 val LocalKptSpacing = staticCompositionLocalOf<KptSpacing> { KptSpacingImpl() }
 val LocalKptElevation = staticCompositionLocalOf<KptElevation> { KptElevationImpl() }
+val LocalKptCornerRadius = staticCompositionLocalOf<KptCornerRadius> { KptCornerRadiusImpl() }
+
+
 
 @ComponentDsl
 class KptThemeBuilder {
@@ -619,6 +633,11 @@ object KptTheme {
 
     val elevation: KptElevation
         @Composable get() = LocalKptElevation.current
+
+    val cornerRadius: KptCornerRadius
+        @Composable get() = LocalKptCornerRadius.current
+
+
 }
 
 fun kptTheme(block: KptThemeBuilder.() -> Unit): KptThemeProvider {

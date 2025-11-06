@@ -182,6 +182,15 @@ interface KptElevation {
     val level5: Dp
 }
 
+@Stable
+interface  KptCornerRadius {
+    val extraSmall: Dp
+    val small: Dp
+    val medium: Dp
+    val large: Dp
+    val extraLarge: Dp
+}
+
 interface ComponentRenderer<T : KptComponent> {
     @Composable
     fun render(component: T)
