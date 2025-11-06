@@ -31,6 +31,11 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(libs.coil.kt.compose)
+
+            api(compose.material3AdaptiveNavigationSuite)
+            api(libs.jetbrains.compose.material3.adaptive)
+            api(libs.jetbrains.compose.material3.adaptive.layout)
+            api(libs.jetbrains.compose.material3.adaptive.navigation)
         }
 
         androidMain.dependencies {
