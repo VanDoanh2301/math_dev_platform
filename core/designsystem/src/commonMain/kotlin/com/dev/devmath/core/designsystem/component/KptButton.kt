@@ -247,7 +247,7 @@ fun KptButtonLightPreview() {
 @Preview(name = "KptButton - Dark Theme")
 @Composable
 fun KptButtonDarkPreview() {
-    KptMaterialTheme(darkTheme = true) {
+    KptMaterialTheme(darkTheme = false) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {

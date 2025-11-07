@@ -52,6 +52,8 @@ fun SplashScreen() {
             }
         }
 
+
+
         val textAlpha by animateFloatAsState(
             targetValue = if (showText) 1f else 0f,
             animationSpec = tween(durationMillis = 1000),
@@ -83,7 +85,8 @@ fun SplashScreen() {
                 Text(
                     text = stringResource(Res.string.app_name),
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.alpha(textAlpha)
+                    modifier = Modifier.alpha(textAlpha),
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
 
@@ -100,6 +103,7 @@ fun SplashScreen() {
                 cornerRadius = KptTheme.cornerRadius.medium
             )
         }
+
     }
 }
 
