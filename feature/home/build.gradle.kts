@@ -11,6 +11,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.ui)
             implementation(projects.core.designsystem)
+            implementation(projects.core.camera)
 
             implementation(compose.ui)
             implementation(compose.material3)

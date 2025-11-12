@@ -29,4 +29,5 @@
     <!-- Other Tools Cards -->
     <string name="tool_voice_translator">Voice and Text Translator</string>
     <string name="tool_grammar_check">Grammar Check</string>
+    <string name="tool_camera">Camera</string>
 </resources>

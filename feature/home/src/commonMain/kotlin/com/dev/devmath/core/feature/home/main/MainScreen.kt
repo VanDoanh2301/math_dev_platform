@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dev.devmath.core.designsystem.KptMaterialTheme
 import com.dev.devmath.core.designsystem.component.KptFilledButton
+import com.dev.devmath.core.designsystem.icon.AppIcons
 import com.dev.devmath.core.designsystem.theme.KptTheme
 import com.dev.devmath.core.designsystem.theme.backgroundLight
 import com.dev.devmath.core.designsystem.theme.kptLightTheme
@@ -59,6 +60,7 @@ fun MainScreen(
     onTranslateClick: () -> Unit = {},
     onVoiceTranslatorClick: () -> Unit = {},
     onGrammarCheckClick: () -> Unit = {},
+    onCameraClick: () -> Unit = {},
     onPremiumUpgradeClick: () -> Unit = {}
 ) {
     LazyColumn(
@@ -106,7 +108,8 @@ fun MainScreen(
         item {
             OtherToolsCards(
                 onVoiceTranslatorClick = onVoiceTranslatorClick,
-                onGrammarCheckClick = onGrammarCheckClick
+                onGrammarCheckClick = onGrammarCheckClick,
+                onCameraClick = onCameraClick
             )
         }
 
@@ -287,7 +290,8 @@ private fun HomeworkCardsGrid(
 @Composable
 private fun OtherToolsCards(
     onVoiceTranslatorClick: () -> Unit,
-    onGrammarCheckClick: () -> Unit
+    onGrammarCheckClick: () -> Unit,
+    onCameraClick: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(KptTheme.spacing.md)
@@ -316,6 +320,21 @@ private fun OtherToolsCards(
                 )
             },
             onClick = onGrammarCheckClick,
+            modifier = Modifier.fillMaxWidth().height(56.dp),
+            backgroundColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+        
+        OtherToolsCard(
+            title = stringResource(Res.string.tool_camera),
+            icon = {
+                androidx.compose.material3.Icon(
+                    imageVector = AppIcons.Camera,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
+            onClick = onCameraClick,
             modifier = Modifier.fillMaxWidth().height(56.dp),
             backgroundColor = MaterialTheme.colorScheme.onPrimaryContainer
         )

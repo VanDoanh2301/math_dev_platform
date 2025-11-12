@@ -1,48 +1,60 @@
 package com.dev.devmath
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.painterResource
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.dev.devmath.core.designsystem.KptMaterialTheme
+import com.dev.devmath.core.feature.home.camera.CameraScreen
+import com.dev.devmath.core.feature.home.main.MainScreen
+import com.dev.devmath.core.feature.home.math.MathSolveScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-import devmath.composeapp.generated.resources.Res
-import devmath.composeapp.generated.resources.compose_multiplatform
+object Routes {
+    const val MAIN = "main"
+    const val CAMERA = "camera"
+    const val MATH_SOLVE = "math_solve"
+}
 
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+    val navController = rememberNavController()
+    
+    KptMaterialTheme {
+        NavHost(
+            navController = navController,
+            startDestination = Routes.MAIN
         ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
+            composable(Routes.MAIN) {
+                MainScreen(
+                    onMathSolveClick = {
+                        navController.navigate(Routes.MATH_SOLVE)
+                    },
+                    onCameraClick = {
+                        navController.navigate(Routes.CAMERA)
+                    }
+                )
             }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
-                }
+            
+            composable(Routes.CAMERA) {
+                CameraScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onPhotoCaptured = { photoBytes ->
+                        // Handle captured photo if needed
+                    }
+                )
+            }
+            
+            composable(Routes.MATH_SOLVE) {
+                MathSolveScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
             }
         }
     }

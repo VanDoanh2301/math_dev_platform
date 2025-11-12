@@ -25,6 +25,18 @@ android {
             isMinifyEnabled = false
         }
     }
+    
+    // Configure flavors to match shared module
+    flavorDimensions += "contentType"
+    productFlavors {
+        create("demo") {
+            dimension = "contentType"
+            applicationIdSuffix = ".demo"
+        }
+        create("prod") {
+            dimension = "contentType"
+        }
+    }
 }
 
 kotlin {
@@ -36,6 +48,12 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            
+            // Depend on shared module which aggregates all UI modules
+            implementation(projects.shared)
+            
+            // Navigation is still needed for composeApp
+            implementation(libs.jb.composeNavigation)
         }
         androidMain.dependencies {
             implementation(compose.preview)
