@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -34,6 +35,7 @@ import com.dev.devmath.core.feature.home.intro.component.PagerIndicator
 import com.dev.devmath.core.ui.resources.Res
 import com.dev.devmath.core.ui.resources.*
 import com.dev.devmath.core.ui.resources.img_background_splash
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
@@ -42,11 +44,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 const val PAGE_SIZE = 3
 const val WEIGHT_SPACING = 0.5f
-const val HEIGHT_BUTTON = 42
+const val HEIGHT_BUTTON = 46
 
 @Composable
 fun IntroScreen() {
     val pagerState = rememberPagerState(0, 0F) { introList.size }
+    val scope = rememberCoroutineScope()
     val buttonTextState by remember {
         derivedStateOf {
             when (pagerState.currentPage) {
@@ -67,19 +70,22 @@ fun IntroScreen() {
         contentAlignment = Alignment.Center
     ) {
 
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize().align(alignment = Alignment.Center)
-        ) { page ->
-            IntroItem(introList[page])
-        }
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth().align(alignment = Alignment.BottomCenter)
+            modifier = Modifier.fillMaxWidth()
         )
         {
+            Spacer(modifier = Modifier.weight(1f))
 
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.padding(horizontal = KptTheme.spacing.xl).fillMaxWidth()
+            ) { page ->
+                IntroItem(introList[page])
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
 
             PagerIndicator(
                 pagerState = pagerState,
@@ -87,17 +93,22 @@ fun IntroScreen() {
             )
 
             KptFilledButton(
-                onClick = {},
+                onClick = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                    }
+                },
                 shape = KptTheme.shapes.extraLarge,
                 modifier = Modifier
                     .padding(KptTheme.spacing.md)
                     .fillMaxWidth()
                     .height(HEIGHT_BUTTON.dp)
             ) {
-                Text("stringResource(buttonTextState)", style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    stringResource(buttonTextState),
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
-
-
         }
     }
 
@@ -106,21 +117,18 @@ fun IntroScreen() {
 @Composable
 fun IntroItem(intro: Intro) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(bottom = KptTheme.spacing.lg),
+        modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
 
         Image(
             painter = painterResource(intro.imageRes),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().aspectRatio(9/16f),
             contentDescription = "content image"
         )
 
-        Spacer(modifier = Modifier.height(KptTheme.spacing.md))
+        Spacer(modifier = Modifier.height(KptTheme.spacing.lg))
 
         Text(
             text = stringResource(intro.title),
@@ -143,22 +151,22 @@ private val introList = listOf(
     Intro(
         title = Res.string.intro_title_one,
         content = Res.string.intro_content_one,
-        imageRes = Res.drawable.ic_intro_live_location
+        imageRes = Res.drawable.intro_1
     ),
     Intro(
         title = Res.string.intro_title_two,
         content = Res.string.intro_content_two,
-        imageRes = Res.drawable.ic_intro_receive_alrets
+        imageRes = Res.drawable.intro_2
     ),
     Intro(
         title = Res.string.intro_title_three,
         content = Res.string.intro_content_three,
-        imageRes = Res.drawable.ic_intro_location_history
+        imageRes = Res.drawable.intro_3
     )
 )
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun IntroPreview() {
     KptMaterialTheme {

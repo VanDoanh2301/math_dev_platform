@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Math AI</string>
-    <string name="intro_title_one">intro_title_one</string>
-    <string name="intro_title_two">intro_title_two</string>
-    <string name="intro_title_three">intro_title_three</string>
+    <string name="intro_title_one">Scan &amp; Solve Subjects</string>
+    <string name="intro_title_two">Solve Quickly &amp; Correctly</string>
+    <string name="intro_title_three">Chat With AI</string>
     <string name="intro_content_one">intro_content_one</string>
     <string name="intro_content_two">intro_content_two</string>
     <string name="intro_content_three">intro_content_three</string>
