@@ -160,6 +160,31 @@ fun KptFilledButton(
     )
 }
 
+@Composable
+fun KptFilledButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    shape: Shape? = null,
+    contentPadding: PaddingValues = PaddingValues(
+        horizontal = KptTheme.spacing.lg,
+        vertical = KptTheme.spacing.sm
+    ),
+    colors: ButtonColors? = null,
+    content: @Composable RowScope.() -> Unit
+) {
+    KptButton(
+        onClick = onClick,
+        modifier = modifier,
+        variant = KptButtonVariant.Filled,
+        enabled = enabled,
+        shape = shape,
+        contentPadding = contentPadding,
+        colors = colors,
+        content = content
+    )
+}
+
 /**
  * Convenience function for outlined button with default spacing
  */

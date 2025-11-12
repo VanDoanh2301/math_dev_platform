@@ -8,4 +8,25 @@
     <string name="intro_content_three">intro_content_three</string>
     <string name="next">NEXT</string>
     <string name="get_started">GET STARTED</string>
+    
+    <!-- Home Screen -->
+    <string name="home_title">AI Homework</string>
+    <string name="home_homework_solve">Homework Solve</string>
+    <string name="home_other_tools">Other Tools</string>
+    
+    <!-- Premium Banner -->
+    <string name="premium_upgrade_title">UPGRADE PREMIUM</string>
+    <string name="premium_remove_ads">Remove Ads</string>
+    <string name="premium_unlock_features">Unlock All Features</string>
+    <string name="premium_upgrade_now">UPGRADE NOW</string>
+    
+    <!-- Homework Cards -->
+    <string name="homework_math_solve">Math Solve</string>
+    <string name="homework_chemistry_solve">Chemistry Solve</string>
+    <string name="homework_physic_solve">Physic Solve</string>
+    <string name="homework_translate">Translate</string>
+    
+    <!-- Other Tools Cards -->
+    <string name="tool_voice_translator">Voice and Text Translator</string>
+    <string name="tool_grammar_check">Grammar Check</string>
 </resources>
