@@ -27,6 +27,7 @@ import com.dev.devmath.core.camera.CameraPreview
 import com.dev.devmath.core.designsystem.KptMaterialTheme
 import com.dev.devmath.core.designsystem.icon.AppIcons
 import com.dev.devmath.core.designsystem.theme.KptTheme
+import com.dev.devmath.core.platform.NativeCameraView
 
 /**
  * Camera screen with preview and capture button
@@ -111,5 +112,18 @@ fun CameraScreen(
             cameraController?.release()
         }
     }
+}
+
+@Composable
+fun CameraViewNew() {
+    NativeCameraView(
+        onImageCaptured = { bytes ->
+
+
+        },
+        onError = { e ->
+
+        }
+    )
 }
 

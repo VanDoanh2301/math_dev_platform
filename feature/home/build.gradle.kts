@@ -13,6 +13,7 @@ kotlin {
             implementation(projects.core.ui)
             implementation(projects.core.designsystem)
             implementation(projects.core.camera)
+            implementation(projects.core.platform)
 
             implementation(compose.ui)
             implementation(compose.material3)

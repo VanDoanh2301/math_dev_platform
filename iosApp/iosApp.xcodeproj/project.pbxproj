@@ -6,12 +6,17 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		3C27D9172EC5982C005CA471 /* CropViewController in Frameworks */ = {isa = PBXBuildFile; productRef = 3C27D9162EC5982C005CA471 /* CropViewController */; };
+		3C27D9192EC5982C005CA471 /* TOCropViewController in Frameworks */ = {isa = PBXBuildFile; productRef = 3C27D9182EC5982C005CA471 /* TOCropViewController */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		4263F9E5B8E4E5CEDA81D918 /* DevMath.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DevMath.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		BDE4999DAE827C06EB22D255 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		BDE4999DAE827C06EB22D255 /* Exceptions for "iosApp" folder in "iosApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -29,7 +34,7 @@
 		993856F202B7F6CA1A66D144 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				BDE4999DAE827C06EB22D255 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+				BDE4999DAE827C06EB22D255 /* Exceptions for "iosApp" folder in "iosApp" target */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -41,6 +46,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C27D9192EC5982C005CA471 /* TOCropViewController in Frameworks */,
+				3C27D9172EC5982C005CA471 /* CropViewController in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +93,8 @@
 			);
 			name = iosApp;
 			packageProductDependencies = (
+				3C27D9162EC5982C005CA471 /* CropViewController */,
+				3C27D9182EC5982C005CA471 /* TOCropViewController */,
 			);
 			productName = iosApp;
 			productReference = 4263F9E5B8E4E5CEDA81D918 /* DevMath.app */;
@@ -115,6 +124,9 @@
 			);
 			mainGroup = 18F69750292692416B5A0E56;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3C27D9152EC5982C005CA471 /* XCRemoteSwiftPackageReference "TOCropViewController" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 84B9A6844102C472195CE70F /* Products */;
 			projectDirPath = "";
@@ -138,12 +150,16 @@
 /* Begin PBXShellScriptBuildPhase section */
 		2F8E57831FE2687BC554534A /* Compile Kotlin */ = {
 			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
 			inputPaths = (
 			);
 			name = "Compile Kotlin";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
 			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :shared:embedAndSignAppleFrameworkForXcode\n";
 		};
 		9C8AF32755036CFA3D30C553 /* Compile Kotlin Framework */ = {
@@ -381,6 +397,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3C27D9152EC5982C005CA471 /* XCRemoteSwiftPackageReference "TOCropViewController" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/TimOliver/TOCropViewController.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3C27D9162EC5982C005CA471 /* CropViewController */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3C27D9152EC5982C005CA471 /* XCRemoteSwiftPackageReference "TOCropViewController" */;
+			productName = CropViewController;
+		};
+		3C27D9182EC5982C005CA471 /* TOCropViewController */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3C27D9152EC5982C005CA471 /* XCRemoteSwiftPackageReference "TOCropViewController" */;
+			productName = TOCropViewController;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = FF88FA35E026EA73C73831A2 /* Project object */;
 }

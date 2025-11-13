@@ -73,7 +73,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         iosMain.dependencies {
-//            api(projects.core.platform)
+            api(projects.core.platform)
         }
 //        jvmMain.dependencies {
 //            implementation(compose.desktop.currentOs)
