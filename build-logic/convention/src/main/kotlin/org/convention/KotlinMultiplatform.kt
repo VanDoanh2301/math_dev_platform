@@ -21,12 +21,12 @@ internal fun Project.configureKotlinMultiplatformLibrary() {
             iosSimulatorArm64(),
         ).forEach { iosTarget ->
             iosTarget.binaries.framework {
-                baseName = "ComposeLibrary"
+                baseName = project.name
                 isStatic = true
             }
         }
 
-        jvm()
+//        jvm()
         androidTarget()
 
         compilerOptions {
@@ -51,7 +51,7 @@ internal fun Project.configureKotlinMultiplatform() {
 //            }
 //        }
 
-        jvm()
+//        jvm()
         androidTarget()
 
         compilerOptions {

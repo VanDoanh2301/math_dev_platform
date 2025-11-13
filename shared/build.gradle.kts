@@ -28,9 +28,9 @@ kotlin {
             api(projects.core.platform)
         }
 
-        jvmMain.dependencies {
-
-        }
+//        jvmMain.dependencies {
+//
+//        }
     }
 
     cocoapods {
