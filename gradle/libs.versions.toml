@@ -55,6 +55,7 @@ kotlinxDatetime = "0.6.2"
 kotlinxImmutable = "0.3.8"
 kotlinxSerializationJson = "1.8.1"
 ksp = "2.1.20-2.0.1"
+skiko = "0.9.30"
 
 # Static Analysis & Code Formatting
 ktlint = "12.1.1"
@@ -221,6 +222,9 @@ androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "u
 androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
+
+# Skia/Skiko
+jetbrains-skia = { module = "org.jetbrains.skiko:skiko", version.ref = "skiko" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

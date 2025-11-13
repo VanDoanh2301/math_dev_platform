@@ -37,93 +37,16 @@ fun CameraScreen(
     onBackClick: () -> Unit,
     onPhotoCaptured: (ByteArray?) -> Unit = {}
 ) {
-    var cameraController: CameraController? by remember { mutableStateOf(null) }
-    var isCapturing by remember { mutableStateOf(false) }
-    
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-    ) {
-        // Camera preview
-        CameraPreview(
-            modifier = Modifier.fillMaxSize(),
-            onControllerReady = { controller ->
-                cameraController = controller
-            }
-        )
-        
-        // Back button
-        IconButton(
-            onClick = onBackClick,
-            modifier = Modifier
-                .padding(KptTheme.spacing.md)
-                .align(Alignment.TopStart)
-        ) {
-            Icon(
-                imageVector = AppIcons.ArrowBack,
-                contentDescription = "Back",
-                tint = Color.White
-            )
-        }
-        
-        // Capture button
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = KptTheme.spacing.xl)
-        ) {
-            Button(
-                onClick = {
-                    if (!isCapturing && cameraController != null) {
-                        isCapturing = true
-                        cameraController?.capturePhoto { photoBytes ->
-                            isCapturing = false
-                            onPhotoCaptured(photoBytes)
-                            if (photoBytes != null) {
-                                onBackClick()
-                            }
-                        }
-                    }
-                },
-                modifier = Modifier.size(72.dp),
-                shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = Color.Black
-                ),
-                enabled = !isCapturing && cameraController != null
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(64.dp)
-                        .background(
-                            color = if (isCapturing) Color.Gray else Color.White,
-                            shape = CircleShape
-                        )
-                )
-            }
-        }
-    }
-    
-    // Release camera when screen is disposed
-    DisposableEffect(cameraController) {
-        onDispose {
-            cameraController?.release()
-        }
-    }
-}
-
-@Composable
-fun CameraViewNew() {
     NativeCameraView(
         onImageCaptured = { bytes ->
-
-
+            onPhotoCaptured(bytes)
         },
         onError = { e ->
 
-        }
+        },
+        modifier = Modifier.fillMaxSize()
     )
+
 }
+
 

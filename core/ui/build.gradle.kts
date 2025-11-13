@@ -24,6 +24,9 @@ kotlin {
             implementation(libs.jb.lifecycleViewmodel)
             implementation(libs.jb.composeNavigation)
             implementation(libs.jb.lifecycleViewmodelSavedState)
+            
+            // Skia for image processing (also included in compose.ui, but explicit for clarity)
+            implementation(libs.jetbrains.skia)
         }
     }
 }
