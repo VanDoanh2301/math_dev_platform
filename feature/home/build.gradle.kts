@@ -7,6 +7,7 @@ android {
 }
 
 kotlin {
+
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.ui)
@@ -28,6 +29,9 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.androidx.compose.ui.tooling)
+        }
+        iosMain.dependencies {
+            implementation(projects.core.platform)
         }
     }
 }

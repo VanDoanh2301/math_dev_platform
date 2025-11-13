@@ -3,6 +3,7 @@ import com.android.build.gradle.LibraryExtension
 import org.convention.configureFlavors
 import org.convention.configureKotlinAndroid
 import org.convention.configureKotlinMultiplatform
+import org.convention.configureKotlinMultiplatformLibrary
 import org.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -25,7 +26,7 @@ class KMPLibraryConventionPlugin: Plugin<Project> {
                 apply("org.jetbrains.kotlin.plugin.parcelize")
             }
 
-            configureKotlinMultiplatform()
+            configureKotlinMultiplatformLibrary()
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)

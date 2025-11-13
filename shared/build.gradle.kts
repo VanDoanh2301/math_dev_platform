@@ -15,7 +15,7 @@ kotlin {
             api(projects.core.designsystem)
             api(projects.feature.home)
             api(projects.core.camera)
-            
+            api(projects.core.platform)
             // Navigation is needed for feature.home
             implementation(libs.jb.composeNavigation)
         }
@@ -25,7 +25,7 @@ kotlin {
         }
 
         iosMain.dependencies {
-
+            api(projects.core.platform)
         }
 
         jvmMain.dependencies {

@@ -40,6 +40,19 @@ android {
 }
 
 kotlin {
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64(),
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+
+            export(projects.core.platform)
+        }
+    }
+
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -58,6 +71,9 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+        }
+        iosMain.dependencies {
+            api(projects.core.platform)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)

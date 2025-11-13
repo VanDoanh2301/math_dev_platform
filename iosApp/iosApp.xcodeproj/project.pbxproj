@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		BDE4999DAE827C06EB22D255 /* Exceptions for "iosApp" folder in "iosApp" target */ = {
+		BDE4999DAE827C06EB22D255 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -29,7 +29,7 @@
 		993856F202B7F6CA1A66D144 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				BDE4999DAE827C06EB22D255 /* Exceptions for "iosApp" folder in "iosApp" target */,
+				BDE4999DAE827C06EB22D255 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -71,6 +71,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 86AA7DC8A3FBDC37B9DA75B2 /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
+				2F8E57831FE2687BC554534A /* Compile Kotlin */,
 				9C8AF32755036CFA3D30C553 /* Compile Kotlin Framework */,
 				10190BF06BDAD8E62696273A /* Sources */,
 				A35F4832CBBE8241B709069C /* Frameworks */,
@@ -135,6 +136,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		2F8E57831FE2687BC554534A /* Compile Kotlin */ = {
+			isa = PBXShellScriptBuildPhase;
+			inputPaths = (
+			);
+			name = "Compile Kotlin";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :shared:embedAndSignAppleFrameworkForXcode\n";
+		};
 		9C8AF32755036CFA3D30C553 /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -178,6 +189,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\"";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -206,6 +218,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\"";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
