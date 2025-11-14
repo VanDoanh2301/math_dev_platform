@@ -7,5 +7,6 @@ import androidx.compose.ui.Modifier
 expect fun NativeCameraView(
     onImageCaptured: (ByteArray) -> Unit,
     onError: (Throwable) -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    onBackClick: () -> Unit,
 )

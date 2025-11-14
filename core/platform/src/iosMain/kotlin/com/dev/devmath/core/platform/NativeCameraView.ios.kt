@@ -8,7 +8,8 @@ import com.dev.devmath.core.platform.utils.LocalNativeViewFactory
 @Composable
 actual fun NativeCameraView(
     onImageCaptured: (ByteArray) -> Unit,
-    onError: (Throwable) -> Unit, modifier: Modifier
+    onError: (Throwable) -> Unit, modifier: Modifier,
+    onBackClick: () -> Unit,
 ) {
     val factory = LocalNativeViewFactory.current
     UIKitViewController(
@@ -16,7 +17,7 @@ actual fun NativeCameraView(
         factory = {
             factory.createCameraView(
                 onImageCaptured = onImageCaptured,  // Pass ByteArray directly
-                onBack = { /* Handle back if needed */ }
+                onBack = {onBackClick() }
             )
         }
     )

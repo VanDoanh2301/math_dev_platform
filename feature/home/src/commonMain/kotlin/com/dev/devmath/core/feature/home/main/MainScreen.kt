@@ -58,8 +58,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  * Main Screen for the Home feature
  */
 @Composable
-fun MainScreen(
-    capturedImage: ImageBitmap? = null,
+fun  MainScreen(
     onMathSolveClick: () -> Unit = {},
     onChemistrySolveClick: () -> Unit = {},
     onPhysicSolveClick: () -> Unit = {},
@@ -79,14 +78,7 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(KptTheme.spacing.md))
             HeaderSection()
         }
-
-        // Display captured image if available
-        capturedImage?.let { image ->
-            item {
-                CapturedImageSection(image = image)
-            }
-        }
-
+        
         item {
             PremiumBanner(onClick = onPremiumUpgradeClick)
         }
@@ -354,34 +346,6 @@ private fun OtherToolsCards(
     }
 }
 
-/**
- * Section to display captured image
- */
-@Composable
-private fun CapturedImageSection(image: ImageBitmap) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Captured Image",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = KptTheme.spacing.sm)
-        )
-        
-        Image(
-            bitmap = image,
-            contentDescription = "Captured photo",
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(16f / 9f)
-                .clip(RoundedCornerShape(KptTheme.spacing.md))
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-            contentScale = ContentScale.Crop
-        )
-    }
-}
 
 @Preview(showBackground = false)
 @Composable

@@ -150,7 +150,7 @@ class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     // MARK: - AVCapturePhotoCaptureDelegate
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        if let error = error {
+        if error != nil {
             DispatchQueue.main.async {
                 self.alert = true
             }

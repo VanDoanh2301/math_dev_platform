@@ -44,7 +44,10 @@ fun CameraScreen(
         onError = { e ->
 
         },
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        onBackClick = {
+            onBackClick()
+        }
     )
 
 }
