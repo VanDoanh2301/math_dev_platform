@@ -71,6 +71,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ucrop)
         }
         iosMain.dependencies {
             api(projects.core.platform)

@@ -5,8 +5,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
-import org.jetbrains.skia.Image
-import org.jetbrains.skia.Image.Companion
+
 
 fun ByteArray.decodeToImageBitmap(): ImageBitmap {
     return this.decodeToImageBitmap()
