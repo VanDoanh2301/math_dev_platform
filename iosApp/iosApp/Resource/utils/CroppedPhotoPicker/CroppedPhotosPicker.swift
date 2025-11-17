@@ -79,3 +79,33 @@ struct CroppedPhotosPicker<Label: View>: View {
         
     }
 }
+
+
+struct CropperView: View {
+    
+    var image: UIImage
+    var style: CroppedPhotosPickerCroppingStyle = .default
+    var options: CroppedPhotosPickerOptions = .init()
+    
+    /// callback khi crop
+    var onCropped: (CropView.CroppedImage) -> Void
+    /// callback khi cancel
+    var onCancel: () -> Void
+    
+    var body: some View {
+        CropView(
+            image: image,
+            croppingStyle: style,
+            croppingOptions: options
+        ) { cropped in
+            onCropped(cropped)
+        } didCropToCircularImage: { cropped in
+            onCropped(cropped)
+        } didCropImageToRect: { _ in
+            
+        } didFinishCancelled: { _ in
+            onCancel()
+        }
+        .ignoresSafeArea()
+    }
+}

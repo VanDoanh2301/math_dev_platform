@@ -8,7 +8,6 @@ import UIKit
 import SwiftUI
 
 class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
-    
     @Published var isTaken = false
     @Published var session = AVCaptureSession()
     @Published var alert = false
@@ -17,195 +16,134 @@ class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     @Published var isSaved = false
     @Published var picData = Data(count: 0)
     
-    private let sessionQueue = DispatchQueue(label: "camera.session.queue")
-    private var deviceInput: AVCaptureDeviceInput?
-    
-    override init() {
-        super.init()
-        #if !targetEnvironment(simulator)
-        checkPermission()
-        #endif
-    }
-    
-    func checkPermission() {
+    func Check() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             setUp()
+            return
         case .notDetermined:
-            AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
-                guard let self = self else { return }
-                if granted {
+            AVCaptureDevice.requestAccess(for: .video) { (status) in
+                if status {
                     self.setUp()
-                } else {
-                    DispatchQueue.main.async {
-                        self.alert = true
-                    }
                 }
             }
-        case .denied, .restricted:
-            DispatchQueue.main.async {
-                self.alert = true
-            }
-        @unknown default:
-            DispatchQueue.main.async {
-                self.alert = true
-            }
+        case .denied:
+            self.alert.toggle()
+            return
+        default:
+            return
         }
     }
     
     func setUp() {
-        sessionQueue.async { [weak self] in
-            guard let self = self else { return }
-            
+        do {
             self.session.beginConfiguration()
-            defer { self.session.commitConfiguration() }
             
-            // Find available camera device
-            guard let device = self.findCameraDevice() else {
-                DispatchQueue.main.async {
-                    self.alert = true
-                }
+            var device: AVCaptureDevice?
+            if #available(iOS 13.0, *) {
+                device = AVCaptureDevice.default(.builtInTripleCamera, for: .video, position: .back) ??
+                         AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) ??
+                         AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) ??
+                         AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+            } else {
+                device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+            }
+            
+            guard let captureDevice = device else {
+                print("Không thể tìm thấy camera")
                 return
             }
             
-            // Add input
-            do {
-                let input = try AVCaptureDeviceInput(device: device)
-                self.deviceInput = input // Store strong reference
-                if self.session.canAddInput(input) {
-                    self.session.addInput(input)
-                } else {
-                    return
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    self.alert = true
-                }
-                return
-            }
+            let input = try AVCaptureDeviceInput(device: captureDevice)
             
-            // Add output
+            if self.session.canAddInput(input) {
+                self.session.addInput(input)
+            }
             if self.session.canAddOutput(self.output) {
                 self.session.addOutput(self.output)
-            } else {
-                return
             }
             
-            // Start session on main thread
-            DispatchQueue.main.async {
-                if !self.session.isRunning {
-                    self.session.startRunning()
-                }
+            self.session.commitConfiguration()
+            
+        } catch {
+            print("Camera setup error: \(error.localizedDescription)")
+        }
+    }
+    
+    func startSession() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            if !self.session.isRunning {
+                self.session.startRunning()
             }
         }
     }
     
-    private func findCameraDevice() -> AVCaptureDevice? {
-        if #available(iOS 13.0, *) {
-            return AVCaptureDevice.default(.builtInTripleCamera, for: .video, position: .back) ??
-                   AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) ??
-                   AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) ??
-                   AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-        } else {
-            return AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+    func stopSession() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            if self.session.isRunning {
+                self.session.stopRunning()
+            }
         }
     }
     
-    func takePic() {
-        guard session.isRunning else {
-            return
-        }
-        
-        sessionQueue.async { [weak self] in
-            guard let self = self else { return }
-            let settings = AVCapturePhotoSettings()
+    func takePic(flashMode: AVCaptureDevice.FlashMode = .off) {
+        DispatchQueue.global(qos: .background).async {
+            let photoSettings = AVCapturePhotoSettings()
             
-            // Ensure delegate is set on main thread
+            // Chỉ set flash mode nếu device hỗ trợ
+            if self.output.supportedFlashModes.contains(flashMode) {
+                photoSettings.flashMode = flashMode
+            }
+            
+            self.output.capturePhoto(with: photoSettings, delegate: self)
+            
             DispatchQueue.main.async {
-                self.output.capturePhoto(with: settings, delegate: self)
                 self.isTaken = true
             }
         }
     }
     
     func reTake() {
-        sessionQueue.async { [weak self] in
-            guard let self = self else { return }
-            
-            DispatchQueue.main.async {
-                self.picData = Data(count: 0)
-                withAnimation {
-                    self.isTaken = false
-                }
-                self.isSaved = false
-                
-                // Restart session if needed
-                if !self.session.isRunning {
-                    self.session.startRunning()
-                }
+        DispatchQueue.main.async {
+            self.picData = Data(count: 0)
+            withAnimation {
+                self.isTaken = false
             }
+            self.isSaved = false
+            
+            // Restart camera session
+            self.startSession()
         }
     }
     
-    // MARK: - AVCapturePhotoCaptureDelegate
-    
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        if error != nil {
-            DispatchQueue.main.async {
-                self.alert = true
-            }
+        if let error = error {
+            print("Photo capture error: \(error.localizedDescription)")
             return
         }
+        
+        print("Photo taken successfully")
         
         guard let imageData = photo.fileDataRepresentation() else {
-            DispatchQueue.main.async {
-                self.alert = true
-            }
+            print("Failed to get image data")
             return
         }
         
-        DispatchQueue.main.async {
-            self.picData = imageData
-            self.session.stopRunning()
-        }
+        self.picData = imageData
+        print("Photo data captured: \(imageData.count) bytes")
+        
+        // Stop session after capture
+        self.stopSession()
     }
     
     func savePic() {
-        guard !picData.isEmpty, let image = UIImage(data: picData) else {
+        guard let image = UIImage(data: self.picData) else {
+            print("Failed to create image from data")
             return
         }
         
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-        isSaved = true
-    }
-    
-    deinit {
-        // Stop session synchronously on the session queue
-        let session = self.session
-        let queue = self.sessionQueue
-        
-        // Use sync to ensure cleanup completes before deallocation
-        queue.sync {
-            if session.isRunning {
-                session.stopRunning()
-            }
-            
-            // Remove all inputs and outputs
-            session.beginConfiguration()
-            let inputs = session.inputs
-            let outputs = session.outputs
-            
-            inputs.forEach { session.removeInput($0) }
-            outputs.forEach { session.removeOutput($0) }
-            
-            session.commitConfiguration()
-        }
-        
-        // Clear preview (will be handled automatically by layer hierarchy)
-        preview?.removeFromSuperlayer()
-        preview = nil
-        
-        // Clear device input reference
-        deviceInput = nil
+        self.isSaved = true
+        print("Photo saved successfully")
     }
 }
