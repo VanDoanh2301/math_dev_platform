@@ -237,7 +237,6 @@ struct CameraVC: View {
                     updateSelectedStyleFromScroll()
                 }
                 .onChange(of: selectedStyle) { _ in
-                    guard !isUpdatingFromScroll else { return }
                     centerSelectedStyleIfNeeded(proxy: proxy, animated: true)
                 }
             }
