@@ -1,9 +1,13 @@
 package com.dev.devmath.core.platform.camera
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -11,28 +15,44 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.annotation.DrawableRes
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil.compose.rememberAsyncImagePainter
+import com.dev.devmath.core.platform.R
 import com.dev.devmath.core.designsystem.theme.KptTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -42,6 +62,20 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Executor
+import kotlin.collections.listOf
+import kotlin.math.abs
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+fun CameraPreview() {
+    CameraScreen(
+        onImageCaptured = {},
+        onBack = {}
+    )
+}
+
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -64,6 +98,7 @@ fun CameraScreen(
                 onBack = onBack
             )
         }
+
         else -> {
             PermissionDeniedScreen(onBack = onBack)
         }
@@ -76,12 +111,13 @@ private fun CameraContent(
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
-    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     var imageCapture: ImageCapture? by remember { mutableStateOf(null) }
     var flashMode by remember { mutableIntStateOf(ImageCapture.FLASH_MODE_OFF) }
     var capturedImageUri by remember { mutableStateOf<Uri?>(null) }
     var previewView by remember { mutableStateOf<PreviewView?>(null) }
+    var selectedCameraStyle by remember { mutableStateOf(listCameraStyle.first()) }
 
     val executor = remember { ContextCompat.getMainExecutor(context) }
 
@@ -96,7 +132,7 @@ private fun CameraContent(
     val uCropLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == android.app.Activity.RESULT_OK) {
+        if (result.resultCode == Activity.RESULT_OK) {
             result.data?.let { intent ->
                 UCrop.getOutput(intent)?.let { croppedUri ->
                     onImageCaptured(croppedUri)
@@ -158,29 +194,40 @@ private fun CameraContent(
                 .padding(bottom = 50.dp)
         ) {
             if (capturedImageUri == null) {
-                // Capture Mode Controls
-                CaptureControls(
-                    flashMode = flashMode,
-                    onFlashToggle = {
-                        flashMode = when (flashMode) {
-                            ImageCapture.FLASH_MODE_OFF -> ImageCapture.FLASH_MODE_ON
-                            ImageCapture.FLASH_MODE_ON -> ImageCapture.FLASH_MODE_AUTO
-                            else -> ImageCapture.FLASH_MODE_OFF
-                        }
-                        imageCapture?.flashMode = flashMode
-                    },
-                    onGalleryClick = { galleryLauncher.launch("image/*") },
-                    onCaptureClick = {
-                        takePicture(
-                            context = context,
-                            imageCapture = imageCapture,
-                            executor = executor,
-                            onImageCaptured = { uri ->
-                                capturedImageUri = uri
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(KptTheme.spacing.lg)
+                ) {
+                    CameraStyleSelector(
+                        styles = listCameraStyle,
+                        selectedStyle = selectedCameraStyle,
+                        onStyleSelected = { style -> selectedCameraStyle = style }
+                    )
+                    CaptureControls(
+                        flashMode = flashMode,
+                        selectedStyle = selectedCameraStyle,
+                        onFlashToggle = {
+                            flashMode = when (flashMode) {
+                                ImageCapture.FLASH_MODE_OFF -> ImageCapture.FLASH_MODE_ON
+                                ImageCapture.FLASH_MODE_ON -> ImageCapture.FLASH_MODE_AUTO
+                                else -> ImageCapture.FLASH_MODE_OFF
                             }
-                        )
-                    }
-                )
+                            imageCapture?.flashMode = flashMode
+                        },
+                        onGalleryClick = { galleryLauncher.launch("image/*") },
+                        onCaptureClick = {
+                            takePicture(
+                                context = context,
+                                imageCapture = imageCapture,
+                                executor = executor,
+                                onImageCaptured = { uri ->
+                                    capturedImageUri = uri
+                                }
+                            )
+                        }
+                    )
+                }
             } else {
                 // Preview Mode Controls
                 PreviewControls(
@@ -196,13 +243,117 @@ private fun CameraContent(
     }
 }
 
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+fun CaptureControlPreview() {
+    CaptureControls(
+        flashMode = ImageCapture.FLASH_MODE_OFF,
+        selectedStyle = listCameraStyle.first(),
+        onCaptureClick = {},
+        onGalleryClick = {},
+        onFlashToggle = {}
+    )
+}
+
+@Composable
+private fun CameraStyleSelector(
+    styles: List<CameraStyleItem>,
+    selectedStyle: CameraStyleItem,
+    onStyleSelected: (CameraStyleItem) -> Unit
+) {
+    val initialIndex = remember(selectedStyle, styles) {
+        styles.indexOf(selectedStyle).coerceAtLeast(0)
+    }
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = initialIndex)
+
+    LaunchedEffect(listState.isScrollInProgress) {
+        if (!listState.isScrollInProgress) {
+            listState.findCenteredItemIndex()?.let { index ->
+                styles.getOrNull(index)?.let { centeredStyle ->
+                    if (centeredStyle != selectedStyle) {
+                        onStyleSelected(centeredStyle)
+                    }
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(selectedStyle) {
+        val targetIndex = styles.indexOf(selectedStyle)
+        if (targetIndex >= 0) {
+            listState.animateScrollToItem(targetIndex)
+        }
+    }
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.isScrollInProgress }
+            .distinctUntilChanged()
+            .collectLatest { isScrolling ->
+                if (!isScrolling) {
+                    listState.findCenteredItemIndex()?.let { index ->
+                        styles.getOrNull(index)?.let { centeredStyle ->
+                            if (centeredStyle != selectedStyle) {
+                                onStyleSelected(centeredStyle)
+                            }
+                        }
+                    }
+                }
+            }
+    }
+
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        val itemWidth = 96.dp
+        val sidePadding = remember(maxWidth) {
+            ((maxWidth - itemWidth) / 2).coerceAtLeast(0.dp)
+        }
+
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            state = listState,
+            horizontalArrangement = Arrangement.spacedBy(KptTheme.spacing.sm),
+            contentPadding = PaddingValues(horizontal = sidePadding)
+        ) {
+            items(styles) { style ->
+                val isSelected = style == selectedStyle
+
+                Box(
+                    modifier = Modifier
+                        .width(itemWidth)
+                        .clickable { onStyleSelected(style) }
+                        .padding(vertical = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = style.style.raw.uppercase(),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = if (isSelected) Color.White else Color.Gray,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Composable
 private fun CaptureControls(
     flashMode: Int,
+    selectedStyle: CameraStyleItem,
     onFlashToggle: () -> Unit,
     onGalleryClick: () -> Unit,
     onCaptureClick: () -> Unit
 ) {
+    val iconScale = remember { Animatable(1f) }
+
+    LaunchedEffect(selectedStyle) {
+        iconScale.snapTo(0.85f)
+        iconScale.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing)
+        )
+    }
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -234,6 +385,16 @@ private fun CaptureControls(
                     .clip(CircleShape)
                     .background(Color.White)
             )
+            Image(
+                painter = painterResource(id = selectedStyle.iconRes),
+                contentDescription = selectedStyle.style.raw,
+                modifier = Modifier
+                    .size(75.dp)
+                    .graphicsLayer {
+                        scaleX = iconScale.value
+                        scaleY = iconScale.value
+                    }
+            )
         }
 
         // Flash Button
@@ -257,11 +418,14 @@ fun PreviewControls(
     onNext: () -> Unit
 ) {
     Box(
-        modifier = Modifier.fillMaxSize().padding(KptTheme.spacing.md)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(KptTheme.spacing.md)
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth().align(Alignment.TopEnd),
+                .fillMaxWidth()
+                .align(Alignment.TopEnd),
 
             contentAlignment = Alignment.TopEnd
         ) {
@@ -306,7 +470,6 @@ fun PreviewControls(
 }
 
 
-
 @Composable
 private fun PermissionDeniedScreen(onBack: () -> Unit) {
     Box(
@@ -349,8 +512,8 @@ private fun PermissionDeniedScreen(onBack: () -> Unit) {
 // Helper Functions
 
 private fun setupCamera(
-    context: android.content.Context,
-    lifecycleOwner: androidx.lifecycle.LifecycleOwner,
+    context: Context,
+    lifecycleOwner: LifecycleOwner,
     previewView: PreviewView,
     onImageCaptureReady: (ImageCapture) -> Unit
 ) {
@@ -386,7 +549,7 @@ private fun setupCamera(
 }
 
 private fun takePicture(
-    context: android.content.Context,
+    context: Context,
     imageCapture: ImageCapture?,
     executor: Executor,
     onImageCaptured: (Uri) -> Unit
@@ -417,10 +580,10 @@ private fun takePicture(
 }
 
 private fun launchUCrop(
-    context: android.content.Context,
+    context: Context,
     sourceUri: Uri,
     onImageCaptured: (Uri) -> Unit,
-    launcher: androidx.activity.result.ActivityResultLauncher<android.content.Intent>? = null
+    launcher: ActivityResultLauncher<Intent>? = null
 ) {
     val cacheDir = context.cacheDir
     val fileName =
@@ -434,9 +597,11 @@ private fun launchUCrop(
     }
 
     if (launcher != null) {
-        launcher.launch(UCrop.of(sourceUri ,Uri.fromFile(File(cacheDir, fileName)))
-            .withOptions(options)
-            .getIntent(context))
+        launcher.launch(
+            UCrop.of(sourceUri, Uri.fromFile(File(cacheDir, fileName)))
+                .withOptions(options)
+                .getIntent(context)
+        )
     } else {
         onImageCaptured(sourceUri)
     }
@@ -449,3 +614,45 @@ private fun getFlashIcon(flashMode: Int): ImageVector {
         else -> Icons.Default.FlashOff
     }
 }
+
+
+private data class CameraStyleItem(
+    val style: CameraAIStyle,
+    @DrawableRes val iconRes: Int
+)
+
+private val listCameraStyle = listOf(
+    CameraStyleItem(CameraAIStyle.MATH, R.drawable.ic_math),
+    CameraStyleItem(CameraAIStyle.CHEMISTRY, R.drawable.ic_chemistry),
+    CameraStyleItem(CameraAIStyle.PHYSIC, R.drawable.ic_physics),
+    CameraStyleItem(CameraAIStyle.TRANS, R.drawable.ic_trans)
+)
+
+private fun LazyListState.findCenteredItemIndex(): Int? {
+    val currentLayoutInfo = layoutInfo
+    val visibleItems = currentLayoutInfo.visibleItemsInfo
+    if (visibleItems.isEmpty()) return null
+
+    val viewportCenter =
+        (currentLayoutInfo.viewportStartOffset + currentLayoutInfo.viewportEndOffset) / 2
+
+    return visibleItems.minByOrNull { item ->
+        val itemCenter = item.offset + (item.size / 2)
+        abs(itemCenter - viewportCenter)
+    }?.index
+}
+
+
+private enum class CameraAIStyle(val raw: String) {
+    MATH("math"),
+    CHEMISTRY("chemistry"),
+    PHYSIC("physic"),
+    TRANS("trans");
+
+    companion object {
+        fun fromRaw(raw: String): CameraAIStyle? =
+            entries.find { it.raw == raw }
+    }
+}
+
+

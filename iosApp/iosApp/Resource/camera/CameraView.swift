@@ -10,6 +10,21 @@ import AVFoundation
 import PhotosUI
 import CropViewController
 
+
+struct CameraView_Previews: PreviewProvider {
+    static var previews: some View {
+        CameraView(
+            onImageCaptured: { image in
+                print("Preview captured image: \(image)")
+            },
+            onBack: {
+                print("Preview back tapped")
+            }
+        )
+    }
+}
+
+
 struct CameraView: View {
     var onImageCaptured: ((UIImage) -> Void)?
     var onBack: (() -> Void)?

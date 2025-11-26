@@ -50,7 +50,6 @@ class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
             }
             
             guard let captureDevice = device else {
-                print("Không thể tìm thấy camera")
                 return
             }
             
