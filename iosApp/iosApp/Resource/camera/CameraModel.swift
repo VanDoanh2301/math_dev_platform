@@ -15,7 +15,9 @@ class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     @Published var preview: AVCaptureVideoPreviewLayer!
     @Published var isSaved = false
     @Published var picData = Data(count: 0)
-    
+    private let sessionQueue = DispatchQueue(label: "com.dev.devmath.camera.session")
+    private var isSessionConfigured = false
+
     func Check() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
@@ -36,52 +38,55 @@ class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     }
     
     func setUp() {
-        do {
-            self.session.beginConfiguration()
+        sessionQueue.async {
+            guard !self.isSessionConfigured else { return }
             
-            var device: AVCaptureDevice?
-            if #available(iOS 13.0, *) {
-                device = AVCaptureDevice.default(.builtInTripleCamera, for: .video, position: .back) ??
-                         AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) ??
-                         AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) ??
-                         AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-            } else {
-                device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+            do {
+                self.session.beginConfiguration()
+                
+                var device: AVCaptureDevice?
+                if #available(iOS 13.0, *) {
+                    device = AVCaptureDevice.default(.builtInTripleCamera, for: .video, position: .back) ??
+                             AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) ??
+                             AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) ??
+                             AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+                } else {
+                    device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+                }
+                
+                guard let captureDevice = device else { return }
+                
+                let input = try AVCaptureDeviceInput(device: captureDevice)
+                
+                if self.session.canAddInput(input) {
+                    self.session.addInput(input)
+                }
+                if self.session.canAddOutput(self.output) {
+                    self.session.addOutput(self.output)
+                }
+                
+                self.session.commitConfiguration()
+                self.isSessionConfigured = true
+                
+                // Ensure the session starts after configuration completes
+                self.startSession()
+            } catch {
+                print("Camera setup error: \(error.localizedDescription)")
             }
-            
-            guard let captureDevice = device else {
-                return
-            }
-            
-            let input = try AVCaptureDeviceInput(device: captureDevice)
-            
-            if self.session.canAddInput(input) {
-                self.session.addInput(input)
-            }
-            if self.session.canAddOutput(self.output) {
-                self.session.addOutput(self.output)
-            }
-            
-            self.session.commitConfiguration()
-            
-        } catch {
-            print("Camera setup error: \(error.localizedDescription)")
         }
     }
     
     func startSession() {
-        DispatchQueue.global(qos: .userInitiated).async {
-            if !self.session.isRunning {
-                self.session.startRunning()
-            }
+        sessionQueue.async {
+            guard self.isSessionConfigured, !self.session.isRunning else { return }
+            self.session.startRunning()
         }
     }
     
     func stopSession() {
-        DispatchQueue.global(qos: .userInitiated).async {
-            if self.session.isRunning {
-                self.session.stopRunning()
-            }
+        sessionQueue.async {
+            guard self.session.isRunning else { return }
+            self.session.stopRunning()
         }
     }
     

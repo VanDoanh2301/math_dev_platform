@@ -41,6 +41,13 @@ struct CameraVC: View {
     @State private var selectedImage: UIImage?
     @State private var showCropVC: Bool = false
     @State private var photosPickerItem: PhotosPickerItem?
+    @State private var selectedStyle: CameraAIStyle = .math
+    @State private var captureIconScale: CGFloat = 1.0
+    @State private var styleCenterPositions: [CameraAIStyle: CGFloat] = [:]
+    @State private var scrollViewCenterX: CGFloat = 0
+    @State private var isProgrammaticScroll = false
+    @State private var isUpdatingFromScroll = false
+    private let styleSelectorSpace = "styleSelectorSpace"
     
     let croppingOptions = CroppedPhotosPickerOptions(
         doneButtonTitle: "Select",
@@ -106,6 +113,16 @@ struct CameraVC: View {
         }
         .onDisappear {
             camera.stopSession()
+        }
+        .onChange(of: selectedStyle) { _ in
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                captureIconScale = 1.15
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) {
+                    captureIconScale = 1.0
+                }
+            }
         }
     }
     
@@ -176,12 +193,56 @@ struct CameraVC: View {
     }
     
     private var captureModeControls: some View {
-        HStack(spacing: 50) {
-            photoLibraryButton
-            captureButton
-            flashButton
+        VStack(spacing: 24) {
+            styleSelector
+            HStack(spacing: 50) {
+                photoLibraryButton
+                captureButton(for: selectedStyle)
+                flashButton
+            }
         }
         .padding(.bottom, 50)
+    }
+
+    private var styleSelector: some View {
+        GeometryReader { outerGeo in
+            ScrollViewReader { proxy in
+                ScrollView(.horizontal, showsIndicators: false) {
+                    let sidePadding = max(0, (outerGeo.size.width / 2) - 80)
+                    HStack(spacing: 16) {
+                        Color.clear.frame(width: sidePadding)
+                        ForEach(CameraAIStyle.allCases) { style in
+                            let isSelected = style == selectedStyle
+                            styleChip(for: style, isSelected: isSelected)
+                        }
+                        Color.clear.frame(width: sidePadding)
+                    }
+                }
+                .frame(height: 70)
+                .coordinateSpace(name: styleSelectorSpace)
+                .onAppear {
+                    updateScrollViewCenter(with: outerGeo.size.width)
+                    centerSelectedStyleIfNeeded(proxy: proxy, animated: false)
+                }
+                .onChange(of: outerGeo.size.width) { newWidth in
+                    updateScrollViewCenter(with: newWidth)
+                    updateSelectedStyleFromScroll()
+                }
+                .onPreferenceChange(StyleCenterPreferenceKey.self) { entries in
+                    var updated: [CameraAIStyle: CGFloat] = [:]
+                    for entry in entries {
+                        updated[entry.style] = entry.center
+                    }
+                    styleCenterPositions = updated
+                    updateSelectedStyleFromScroll()
+                }
+                .onChange(of: selectedStyle) { _ in
+                    guard !isUpdatingFromScroll else { return }
+                    centerSelectedStyleIfNeeded(proxy: proxy, animated: true)
+                }
+            }
+        }
+        .frame(height: 80)
     }
     
     private var photoLibraryButton: some View {
@@ -204,7 +265,7 @@ struct CameraVC: View {
         }
     }
     
-    private var captureButton: some View {
+    private func captureButton(for style: CameraAIStyle) -> some View {
         Button(action: handleCapture) {
             ZStack {
                 Circle()
@@ -214,6 +275,11 @@ struct CameraVC: View {
                 Circle()
                     .stroke(.white, lineWidth: 4)
                     .frame(width: 90, height: 90)
+
+                Image(systemName: style.iconName)
+                    .font(.system(size: 32, weight: .semibold))
+                    .foregroundStyle(style.accentColor)
+                    .scaleEffect(captureIconScale)
             }
             .shadow(color: .black.opacity(0.3), radius: 5)
         }
@@ -255,6 +321,38 @@ struct CameraVC: View {
         flashMode.toggle()
     }
     
+    private func centerSelectedStyleIfNeeded(proxy: ScrollViewProxy, animated: Bool) {
+        guard styleCenterPositions[selectedStyle] != nil else { return }
+        isProgrammaticScroll = true
+        let animation = Animation.spring(response: 0.35, dampingFraction: 0.85)
+        if animated {
+            withAnimation(animation) {
+                proxy.scrollTo(selectedStyle, anchor: .center)
+            }
+        } else {
+            proxy.scrollTo(selectedStyle, anchor: .center)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            isProgrammaticScroll = false
+        }
+    }
+    
+    private func updateSelectedStyleFromScroll() {
+        guard !isProgrammaticScroll,
+              scrollViewCenterX != 0,
+              !styleCenterPositions.isEmpty else { return }
+        
+        if let closest = styleCenterPositions.min(by: {
+            abs($0.value - scrollViewCenterX) < abs($1.value - scrollViewCenterX)
+        }), closest.key != selectedStyle {
+            isUpdatingFromScroll = true
+            selectedStyle = closest.key
+            DispatchQueue.main.async {
+                isUpdatingFromScroll = false
+            }
+        }
+    }
+    
     private func cropViewController(image: UIImage) -> some View {
         CropView(
             image: image,
@@ -272,6 +370,115 @@ struct CameraVC: View {
             showCropVC = false
         }
         .ignoresSafeArea()
+    }
+    
+    private func updateScrollViewCenter(with width: CGFloat) {
+        let newCenter = width / 2
+        if abs(newCenter - scrollViewCenterX) > 0.5 {
+            scrollViewCenterX = newCenter
+        }
+    }
+}
+
+private struct StyleChipCenterReporter: View {
+    let style: CameraAIStyle
+    let coordinateSpace: String
+
+    var body: some View {
+        GeometryReader { geo in
+            Color.clear.preference(
+                key: StyleCenterPreferenceKey.self,
+                value: [
+                    StyleCenterData(
+                        style: style,
+                        center: geo.frame(in: .named(coordinateSpace)).midX
+                    )
+                ]
+            )
+        }
+    }
+}
+
+extension CameraVC {
+    private func styleChip(for style: CameraAIStyle, isSelected: Bool) -> some View {
+        Text(style.title.uppercased())
+            .font(.system(size: 14, weight: .semibold))
+            .foregroundStyle(isSelected ? Color.white : Color.white.opacity(0.65))
+            .padding(.vertical, 10)
+            .padding(.horizontal, 20)
+            .background(
+                Capsule()
+                    .fill(isSelected ? style.accentColor.opacity(0.8) : Color.black.opacity(0.3))
+            )
+            .overlay(
+                Capsule()
+                    .stroke(style.accentColor.opacity(isSelected ? 0.95 : 0.4),
+                            lineWidth: isSelected ? 2 : 1)
+            )
+            .contentShape(Rectangle())
+            .id(style)
+            .onTapGesture {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                    selectedStyle = style
+                }
+            }
+            .background(
+                StyleChipCenterReporter(
+                    style: style,
+                    coordinateSpace: styleSelectorSpace
+                )
+            )
+    }
+}
+
+enum CameraAIStyle: String, CaseIterable, Identifiable {
+    case math, chemistry, physic, trans
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .math: return "Math"
+        case .chemistry: return "Chemistry"
+        case .physic: return "Physic"
+        case .trans: return "Trans"
+        }
+    }
+
+    var iconName: String {
+        switch self {
+        case .math: return "function"
+        case .chemistry: return "flask.fill"
+        case .physic: return "atom"
+        case .trans: return "character.textbox"
+        }
+    }
+
+    var accentColor: Color {
+        switch self {
+        case .math: return Color(red: 0.19, green: 0.44, blue: 0.94)
+        case .chemistry: return Color(red: 0.11, green: 0.74, blue: 0.58)
+        case .physic: return Color(red: 0.96, green: 0.58, blue: 0.2)
+        case .trans: return Color(red: 0.55, green: 0.39, blue: 0.92)
+        }
+    }
+}
+
+private struct StyleCenterData: Equatable {
+    let style: CameraAIStyle
+    let center: CGFloat
+}
+
+private struct StyleCenterPreferenceKey: PreferenceKey {
+    static var defaultValue: [StyleCenterData] = []
+
+    static func reduce(value: inout [StyleCenterData], nextValue: () -> [StyleCenterData]) {
+        var combined = value
+        for entry in nextValue() {
+            combined.removeAll(where: { $0.style == entry.style })
+            combined.append(entry)
+        }
+        value = combined
     }
 }
 
